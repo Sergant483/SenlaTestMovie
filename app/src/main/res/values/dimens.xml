@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="movie_cardview_elevation">4dp</dimen>
+    <dimen name="padding_16dp">16dp</dimen>
+    <dimen name="description_text_size">13sp</dimen>
+    <dimen name="date_text_size">10sp</dimen>
+    <dimen name="country_text_size">13sp</dimen>
+</resources>
