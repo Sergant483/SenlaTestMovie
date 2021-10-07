@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SenlaTestMovie</string>
+    <string name="bundle_movie_key" translatable="false">KEY</string>
 </resources>
