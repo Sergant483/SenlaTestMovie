@@ -13,7 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-class MoviesViewModel : ViewModel() {
+class MoviesViewModel() : ViewModel() {
     private val retrofitServices: RetrofitServices = Common.retrofitService
     private val _movieList = MutableLiveData<List<MovieModel>>()
     private var moviesList = emptyList<MovieModel>()
