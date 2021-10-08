@@ -6,7 +6,7 @@ data class MovieModel(
     var adult: Boolean = false,
     var backdrop_path: String = "",
     @Ignore
-    var genre_ids: List<Int> = emptyList(),
+    var genre_ids: List<Int>? = emptyList(),
     var id: Int = 0,
     var original_language: String = "",
     var original_title: String = "",
@@ -19,7 +19,8 @@ data class MovieModel(
     var vote_average: Double = 0.0,
     var vote_count: Int = 0,
     var country: String = "",
-    var link: String = ""
+    var link: String = "",
+    var dbId: Long = 0L
 ) {
     constructor() : this(
         false,
@@ -37,6 +38,7 @@ data class MovieModel(
         0.0,
         0,
         "",
-        ""
+        "",
+        0L
     )
 }

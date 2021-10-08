@@ -39,18 +39,18 @@ class MoviesAdapter(
         fun bind(movieItem: MovieModel) {
             Picasso.get().load(POSTER_BASE_URL + movieItem.poster_path).into(binding.posterImage)
             binding.description.text = movieItem.overview
-            binding.releaseDate.text = movieItem.release_date
-            binding.country.text = movieItem.country
-            movieItem.link = MOVIE_BASE_URL + movieItem.id
-            binding.link.text = movieItem.link
-            binding.link.setOnClickListener {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(movieItem.link))
-                startActivity(
-                    binding.country.context,
-                    browserIntent,
-                    null
-                )
-            }
+//            binding.releaseDate.text = movieItem.release_date
+//            binding.country.text = movieItem.country
+//            movieItem.link = MOVIE_BASE_URL + movieItem.id
+//            binding.link.text = movieItem.link
+//            binding.link.setOnClickListener {
+//                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(movieItem.link))
+//                startActivity(
+//                    binding.country.context,
+//                    browserIntent,
+//                    null
+//                )
+//            }
             binding.movieCard.setOnClickListener { onItemClickListener(bindingAdapterPosition) }
         }
     }

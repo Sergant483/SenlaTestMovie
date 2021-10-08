@@ -1,72 +1,67 @@
 package com.example.senlatestmovie.presentation.fragment.movie
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.senlatestmovie.api.Common
 import com.example.senlatestmovie.api.RetrofitServices
 import com.example.senlatestmovie.api.models.ExtendedMovieInfo.ExtendedMovieInfoResponse
 import com.example.senlatestmovie.api.models.popularMovie.MovieModel
-import com.example.senlatestmovie.api.models.popularMovie.MoviesResponse
-import retrofit2.Call
-import retrofit2.Callback
+import com.example.senlatestmovie.data.usecase.DeleteAllMoviesUseCase
+import com.example.senlatestmovie.data.usecase.GetAllMoviesUseCase
+import com.example.senlatestmovie.data.usecase.SaveAllMoviesUseCase
+import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.util.*
 
-class MoviesViewModel() : ViewModel() {
+
+class MoviesViewModel(
+    private val getAllMoviesUseCase: GetAllMoviesUseCase,
+    private val deleteAllMoviesUseCase: DeleteAllMoviesUseCase,
+    private val saveAllMoviesUseCase: SaveAllMoviesUseCase
+) : ViewModel() {
     private val retrofitServices: RetrofitServices = Common.retrofitService
-    private val _movieList = MutableLiveData<List<MovieModel>>()
-    private var moviesList = emptyList<MovieModel>()
-    val movieList: LiveData<List<MovieModel>> = _movieList
-
-
-    fun getMovieList() {
-        retrofitServices.getMovieList(apiKey = API_KEY, language = Locale.getDefault().language)
-            .enqueue(object : Callback<MoviesResponse> {
-                override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
-                    t.printStackTrace()
-                }
-
-                override fun onResponse(
-                    call: Call<MoviesResponse>,
-                    response: Response<MoviesResponse>
-                ) {
-                    moviesList = response.body()?.results!!
-                    moviesList.forEach {
-                        getExtendedMovieInfoList(it.id)
-                    }
-                }
-            })
-    }
+    var moviesList = emptyList<MovieModel>()
 
     private fun getExtendedMovieInfoList(movieId: Int) {
-        retrofitServices.getExtendedMovieInfoList(
-            movieId = movieId,
-            apiKey = API_KEY,
-            language = Locale.getDefault().language
-        ).enqueue(object : Callback<ExtendedMovieInfoResponse> {
-            override fun onResponse(
-                call: Call<ExtendedMovieInfoResponse>,
-                response: Response<ExtendedMovieInfoResponse>
-            ) {
-                moviesList.forEach {
-                    if (it.id == response.body()?.id) {
-                        var countries = ""
-                        response.body()?.production_countries?.forEach {
-                            countries += it.name + DELIMETER
-                        }
-                        if (countries.isNotEmpty()) {
-                            it.country = countries.substring(0, countries.length - 2)
-                        }
-                    }
+        var data: Response<ExtendedMovieInfoResponse>? = null
+        viewModelScope.launch {
+            data =
+                retrofitServices.getExtendedMovieInfoList(
+                    movieId = movieId,
+                    apiKey = API_KEY,
+                    language = Locale.getDefault().language
+                )
+        }
+        moviesList.forEach {
+            if (it.id == data?.body()?.id) {
+                var countries = ""
+                data?.body()?.production_countries?.forEach {
+                    countries += it.name + DELIMETER
                 }
-                _movieList.value = moviesList
+                if (countries.isNotEmpty()) {
+                    it.country = countries.substring(0, countries.length - 2)
+                }
             }
+        }
+    }
 
-            override fun onFailure(call: Call<ExtendedMovieInfoResponse>, t: Throwable) {
-                t.printStackTrace()
+    suspend fun getMovieList(): List<MovieModel> {
+        try {
+            val data = retrofitServices.getMovieList(
+                apiKey = API_KEY,
+                language = Locale.getDefault().language
+            )
+            moviesList = data.body()?.results!!
+            moviesList.forEach {
+                getExtendedMovieInfoList(it.id)
             }
-        })
+            deleteAllMoviesUseCase.invoke()
+            saveAllMoviesUseCase.invoke(moviesList)
+        } catch (ex: Exception) {
+            moviesList = getAllMoviesUseCase.invoke()
+            ex.printStackTrace()
+        }
+        return moviesList
     }
 
     companion object {
