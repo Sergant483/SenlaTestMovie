@@ -40,9 +40,9 @@ class MoviesFragment : ScopeFragment() {
                 viewModel.getMovieList()
             }
             while (!viewModel.isNetworkConnected(requireContext()) && viewModel.moviesList.isNullOrEmpty()) {
-                viewModel.isNetworkConnected(requireContext())
                 binding.noDataTextview.isVisible = true
                 binding.progressBar.isVisible = false
+                viewModel.isNetworkConnected(requireContext())
                 delay(1000)
                 if (viewModel.isNetworkConnected(requireContext())) {
                     binding.noDataTextview.isVisible = false
@@ -53,6 +53,14 @@ class MoviesFragment : ScopeFragment() {
             binding.progressBar.isVisible = false
             binding.moviesRecyclerView.adapter =
                 MoviesAdapter(viewModel.moviesList, ::onItemClick)
+        }
+        binding.swipeRefresh.setOnRefreshListener {
+            lifecycleScope.launch {
+                viewModel.getMovieList()
+                binding.moviesRecyclerView.adapter =
+                    MoviesAdapter(viewModel.moviesList, ::onItemClick)
+                binding.swipeRefresh.isRefreshing = false
+            }
         }
     }
 
