@@ -35,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/padding_4dp"
         android:textSize="@dimen/description_extended_text_size"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/poster"
         app:layout_constraintTop_toBottomOf="@id/description"
@@ -60,6 +61,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/poster"
         app:layout_constraintTop_toBottomOf="@id/country"
+        android:autoLink="all"
         tools:text="link" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

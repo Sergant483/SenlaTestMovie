@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.senlatestmovie.R
-import com.example.senlatestmovie.data.database.mapper.entity
 import com.example.senlatestmovie.databinding.MoviesFragmentBinding
 import com.example.senlatestmovie.presentation.fragment.movie.adapter.MoviesAdapter
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,8 +35,24 @@ class MoviesFragment : ScopeFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.moviesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         lifecycleScope.launch {
+            if (viewModel.moviesList.isNullOrEmpty()) {
+                binding.progressBar.isVisible = true
+                viewModel.getMovieList()
+            }
+            while (!viewModel.isNetworkConnected(requireContext()) && viewModel.moviesList.isNullOrEmpty()) {
+                viewModel.isNetworkConnected(requireContext())
+                binding.noDataTextview.isVisible = true
+                binding.progressBar.isVisible = false
+                delay(1000)
+                if (viewModel.isNetworkConnected(requireContext())) {
+                    binding.noDataTextview.isVisible = false
+                    binding.progressBar.isVisible = true
+                    viewModel.getMovieList()
+                }
+            }
+            binding.progressBar.isVisible = false
             binding.moviesRecyclerView.adapter =
-                MoviesAdapter(viewModel.getMovieList(), ::onItemClick)
+                MoviesAdapter(viewModel.moviesList, ::onItemClick)
         }
     }
 

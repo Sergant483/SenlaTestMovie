@@ -3,18 +3,13 @@ package com.example.senlatestmovie.presentation.fragment.extendedMovieInfo
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.example.senlatestmovie.R
-import com.example.senlatestmovie.api.models.ExtendedMovieInfo.ExtendedMovieInfoResponse
 import com.example.senlatestmovie.api.models.popularMovie.MovieModel
-import com.example.senlatestmovie.data.database.entity.MovieEntity
 import com.example.senlatestmovie.databinding.ExtendedMovieInfoFragmentBinding
-import com.example.senlatestmovie.databinding.MoviesFragmentBinding
-import com.example.senlatestmovie.presentation.fragment.movie.adapter.MoviesAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import org.koin.androidx.scope.ScopeFragment
@@ -44,16 +39,13 @@ class ExtendedMovieInfo : ScopeFragment() {
             binding.country.text = movie?.country
             binding.description.text = movie?.overview
             binding.releaseDate.text = movie?.release_date
-                        binding.country.text = movie?.country
-            movie?.link = MOVIE_BASE_URL + movie?.id
+            binding.country.text = movie?.country
             binding.link.text = movie?.link
             binding.link.setOnClickListener {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(movie?.link))
-                startActivity( browserIntent)
+                startActivity(browserIntent)
             }
         }
-
-
     }
 
     override fun onDestroyView() {
@@ -62,7 +54,6 @@ class ExtendedMovieInfo : ScopeFragment() {
     }
 
     companion object {
-        private const val MOVIE_BASE_URL = "https://themoviedb.org/movie/"
         private const val POSTER_BASE_URL = "https://www.themoviedb.org/t/p/w220_and_h330_face/"
     }
 }

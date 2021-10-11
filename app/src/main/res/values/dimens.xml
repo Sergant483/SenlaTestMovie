@@ -10,6 +10,7 @@
     <dimen name="description_text_size">13sp</dimen>
     <dimen name="date_text_size">10sp</dimen>
     <dimen name="country_text_size">13sp</dimen>
+    <dimen name="no_data_text_size">21sp</dimen>
 
     //ExtendedInfoFragment
     <dimen name="description_extended_text_size">17sp</dimen>

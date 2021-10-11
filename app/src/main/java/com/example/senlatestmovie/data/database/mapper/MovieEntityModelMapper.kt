@@ -21,11 +21,9 @@ internal object MovieEntityModelMapper : IEntityModelMapper<MovieEntity, MovieMo
         vote_count = t.movie.vote_count,
         country = t.movie.country,
         link = t.movie.link,
-        dbId = t.movieId
     )
 
     override fun toEntity(r: MovieModel): MovieEntity = MovieEntity(
-        movieId = r.dbId,
         movie = r
     )
 }

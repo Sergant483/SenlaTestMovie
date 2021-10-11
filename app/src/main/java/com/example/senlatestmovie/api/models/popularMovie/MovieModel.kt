@@ -20,7 +20,6 @@ data class MovieModel(
     var vote_count: Int = 0,
     var country: String = "",
     var link: String = "",
-    var dbId: Long = 0L
 ) {
     constructor() : this(
         false,
@@ -38,7 +37,6 @@ data class MovieModel(
         0.0,
         0,
         "",
-        "",
-        0L
+        ""
     )
 }
