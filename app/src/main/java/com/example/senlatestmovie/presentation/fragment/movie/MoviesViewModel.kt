@@ -3,12 +3,11 @@ package com.example.senlatestmovie.presentation.fragment.movie
 import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.net.ConnectivityManager
+import android.os.Parcelable
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.senlatestmovie.api.models.popularMovie.MovieModel
-import com.example.senlatestmovie.data.usecase.DeleteAllMoviesUseCase
-import com.example.senlatestmovie.data.usecase.GetAllMoviesUseCase
-import com.example.senlatestmovie.data.usecase.GetRetrofitClientUseCase
-import com.example.senlatestmovie.data.usecase.SaveAllMoviesUseCase
+import com.example.senlatestmovie.data.usecase.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,7 +18,10 @@ class MoviesViewModel(
     private val saveAllMoviesUseCase: SaveAllMoviesUseCase,
     private val getRetrofitClientUseCase: GetRetrofitClientUseCase
 ) : ViewModel() {
-    var moviesList = emptyList<MovieModel>()
+    private val _moviesList =  MutableLiveData<List<MovieModel>>()
+    val moviesList = _moviesList
+    var saveInstanceStateRecyclerView:Parcelable? = null
+    //var moviesList = emptyList<MovieModel>()
 
 
     private suspend fun getExtendedMovieInfoList(movieId: Int) {
@@ -27,7 +29,7 @@ class MoviesViewModel(
             getRetrofitClientUseCase.invoke().getExtendedMovieInfoList(
                 movieId = movieId
             )
-        moviesList.forEach {
+        _moviesList.value?.forEach {
             if (it.id == data.body()?.id) {
                 var countries = ""
                 data.body()?.production_countries?.forEach {
@@ -41,23 +43,24 @@ class MoviesViewModel(
         }
     }
 
-    suspend fun getMovieList(): List<MovieModel> {
+    suspend fun getMovieList() {
         try {
+            _moviesList.value = getAllMoviesUseCase.invoke()
             val data = getRetrofitClientUseCase.invoke().getMovieList()
-            moviesList = data.body()?.results!!
-            moviesList.forEach {
+            _moviesList.value = data.body()?.results!!
+            _moviesList.value?.forEach {
                 getExtendedMovieInfoList(it.id)
             }
             withContext(Dispatchers.Default) {
                 deleteAllMoviesUseCase.invoke()
-                saveAllMoviesUseCase.invoke(moviesList)
+                saveAllMoviesUseCase.invoke(_moviesList.value!!)
             }
 
         } catch (ex: Exception) {
-            moviesList = getAllMoviesUseCase.invoke()
+            //_moviesList.value = getAllMoviesUseCase.invoke()
             ex.printStackTrace()
         }
-        return moviesList
+
     }
 
     fun isNetworkConnected(context: Context): Boolean {

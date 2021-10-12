@@ -38,6 +38,8 @@ private val useCaseModule: Module = module {
     factory { DeleteAllMoviesUseCase(get()) }
     factory { GetMovieByIdUseCase(get()) }
     factory { GetRetrofitClientUseCase(get()) }
+    factory { GetAllMoviesRetrofitUseCase(get(), get(), get(), get()) }
+
 }
 
 val allModules = dataModule + fragmentModule + repositoryModule + useCaseModule

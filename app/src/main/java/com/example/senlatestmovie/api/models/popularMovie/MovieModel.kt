@@ -1,27 +1,39 @@
 package com.example.senlatestmovie.api.models.popularMovie
 
 import androidx.room.Ignore
+import com.google.gson.annotations.SerializedName
 
 data class MovieModel(
+    var movieId:Long = 0L,
     var adult: Boolean = false,
-    var backdrop_path: String = "",
+    @SerializedName("backdrop_path")
+    var backdropPath: String = "",
     @Ignore
-    var genre_ids: List<Int>? = emptyList(),
+    @SerializedName("genre_ids")
+    var genreIds: List<Int>? = emptyList(),
     var id: Int = 0,
-    var original_language: String = "",
-    var original_title: String = "",
+    @SerializedName("original_language")
+    var originalLanguage: String = "",
+    @SerializedName("original_title")
+    var originalTitle: String = "",
     var overview: String = "",
     var popularity: Double = 0.0,
-    var poster_path: String = "",
-    var release_date: String = "",
+    @SerializedName("poster_path")
+    var posterPath: String = "",
+    @SerializedName("release_date")
+    var releaseDate: String = "",
     var title: String = "",
+    @Ignore
     var video: Boolean = false,
-    var vote_average: Double = 0.0,
-    var vote_count: Int = 0,
+    @SerializedName("vote_average")
+    var voteAverage: Double = 0.0,
+    @SerializedName("vote_count")
+    var voteCount: Int = 0,
     var country: String = "",
     var link: String = "",
 ) {
     constructor() : this(
+        0L,
         false,
         "",
         emptyList(),

@@ -34,10 +34,10 @@ class ExtendedMovieInfo : ScopeFragment() {
         val bundle = arguments?.getInt(BUNDLE_KEY)
         lifecycleScope.launch {
             movie = bundle?.let { viewModel.getMovieById(it) }
-            Picasso.get().load(POSTER_BASE_URL + movie?.poster_path).into(binding.poster)
+            Picasso.get().load(POSTER_BASE_URL + movie?.posterPath).into(binding.poster)
             binding.country.text = movie?.country
             binding.description.text = movie?.overview
-            binding.releaseDate.text = movie?.release_date
+            binding.releaseDate.text = movie?.releaseDate
             binding.country.text = movie?.country
             binding.link.text = movie?.link
             binding.link.setOnClickListener {

@@ -30,11 +30,12 @@ class MoviesAdapter(
 
     override fun getItemCount(): Int = moviesItems.size
 
+
     inner class MoviesViewHolder(private val binding: MovieViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(movieItem: MovieModel) {
-            Picasso.get().load(POSTER_BASE_URL + movieItem.poster_path).into(binding.posterImage)
+            Picasso.get().load(POSTER_BASE_URL + movieItem.posterPath).into(binding.posterImage)
             binding.description.text = movieItem.overview
             binding.movieCard.setOnClickListener { onItemClickListener(bindingAdapterPosition) }
         }

@@ -8,6 +8,6 @@ import com.example.senlatestmovie.data.usecase.GetMovieByIdUseCase
 class ExtendedMovieInfoViewModel(private val getMovieByIdUseCase: GetMovieByIdUseCase) :
     ViewModel() {
 
-    suspend fun getMovieById(id: Int): MovieModel = getMovieByIdUseCase.invoke(id).model
+    suspend fun getMovieById(id: Int?): MovieModel? = id?.let { getMovieByIdUseCase.invoke(it).model }
 
 }
