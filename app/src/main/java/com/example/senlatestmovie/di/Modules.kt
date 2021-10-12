@@ -1,24 +1,22 @@
 package com.example.senlatestmovie.di
 
-import com.example.senlatestmovie.data.dataSource.IMovieListDataSource
-import com.example.senlatestmovie.data.dataSource.MovieListDataSourceImpl
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.example.senlatestmovie.api.RetrofitClient
 import com.example.senlatestmovie.data.database.AppDataBase
-import com.example.senlatestmovie.data.usecase.DeleteAllMoviesUseCase
-import com.example.senlatestmovie.data.usecase.GetAllMoviesUseCase
-import com.example.senlatestmovie.data.usecase.GetMovieByIdUseCase
-import com.example.senlatestmovie.data.usecase.SaveAllMoviesUseCase
-import com.example.senlatestmovie.presentation.fragment.extendedMovieInfo.ExtendedMovieInfo
-import com.example.senlatestmovie.presentation.fragment.extendedMovieInfo.ExtendedMovieInfoViewModel
+import com.example.senlatestmovie.data.datasource.MovieListDataSource
+import com.example.senlatestmovie.data.datasource.MovieListDataSourceImpl
+import com.example.senlatestmovie.data.usecase.*
+import com.example.senlatestmovie.presentation.fragment.extendedmovieinfo.ExtendedMovieInfo
+import com.example.senlatestmovie.presentation.fragment.extendedmovieinfo.ExtendedMovieInfoViewModel
 import com.example.senlatestmovie.presentation.fragment.movie.MoviesFragment
 import com.example.senlatestmovie.presentation.fragment.movie.MoviesViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
 private val fragmentModule: Module = module {
     scope<MoviesFragment> {
-        viewModel { MoviesViewModel(get(),get(),get()) }
+        viewModel { MoviesViewModel(get(), get(), get(), get()) }
     }
     scope<ExtendedMovieInfo> {
         viewModel { ExtendedMovieInfoViewModel(get()) }
@@ -27,17 +25,19 @@ private val fragmentModule: Module = module {
 
 private val dataModule: Module = module {
     single { AppDataBase.newInstance(androidContext()) }
+    single { RetrofitClient }
 }
 
-private val repositoryModule:Module = module {
-    single<IMovieListDataSource> { MovieListDataSourceImpl(get()) }
+private val repositoryModule: Module = module {
+    single<MovieListDataSource> { MovieListDataSourceImpl(get()) }
 }
 
-private val useCaseModule:Module = module {
+private val useCaseModule: Module = module {
     factory { GetAllMoviesUseCase(get()) }
     factory { SaveAllMoviesUseCase(get()) }
     factory { DeleteAllMoviesUseCase(get()) }
     factory { GetMovieByIdUseCase(get()) }
+    factory { GetRetrofitClientUseCase(get()) }
 }
 
 val allModules = dataModule + fragmentModule + repositoryModule + useCaseModule

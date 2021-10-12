@@ -1,4 +1,4 @@
-package com.example.senlatestmovie.presentation.fragment.extendedMovieInfo
+package com.example.senlatestmovie.presentation.fragment.extendedmovieinfo
 
 import android.content.Intent
 import android.net.Uri
@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
-import com.example.senlatestmovie.R
 import com.example.senlatestmovie.api.models.popularMovie.MovieModel
 import com.example.senlatestmovie.databinding.ExtendedMovieInfoFragmentBinding
 import com.squareup.picasso.Picasso
@@ -32,7 +31,7 @@ class ExtendedMovieInfo : ScopeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val bundle = arguments?.getLong(getString(R.string.bundle_movie_key))
+        val bundle = arguments?.getInt(BUNDLE_KEY)
         lifecycleScope.launch {
             movie = bundle?.let { viewModel.getMovieById(it) }
             Picasso.get().load(POSTER_BASE_URL + movie?.poster_path).into(binding.poster)
@@ -54,6 +53,7 @@ class ExtendedMovieInfo : ScopeFragment() {
     }
 
     companion object {
+        const val BUNDLE_KEY = "KEY"
         private const val POSTER_BASE_URL = "https://www.themoviedb.org/t/p/w220_and_h330_face/"
     }
 }

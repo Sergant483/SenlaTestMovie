@@ -1,14 +1,27 @@
 package com.example.senlatestmovie.data.database.entity
 
-import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.example.senlatestmovie.api.models.popularMovie.MovieModel
 
 @Entity
 data class MovieEntity(
-    @PrimaryKey(autoGenerate = true)
-    val movieId: Long = 0L,
-    @Embedded
-    val movie: MovieModel = MovieModel()
+    var adult: Boolean = false,
+    var backdrop_path: String = "",
+    @Ignore
+    var genre_ids: List<Int>? = emptyList(),
+    @PrimaryKey
+    var id: Int = 0,
+    var original_language: String = "",
+    var original_title: String = "",
+    var overview: String = "",
+    var popularity: Double = 0.0,
+    var poster_path: String = "",
+    var release_date: String = "",
+    var title: String = "",
+    var video: Boolean = false,
+    var vote_average: Double = 0.0,
+    var vote_count: Int = 0,
+    var country: String = "",
+    var link: String = "",
 )

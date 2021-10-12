@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.net.ConnectivityManager
 import androidx.lifecycle.ViewModel
-import com.example.senlatestmovie.api.Common
-import com.example.senlatestmovie.api.RetrofitServices
 import com.example.senlatestmovie.api.models.popularMovie.MovieModel
 import com.example.senlatestmovie.data.usecase.DeleteAllMoviesUseCase
 import com.example.senlatestmovie.data.usecase.GetAllMoviesUseCase
+import com.example.senlatestmovie.data.usecase.GetRetrofitClientUseCase
 import com.example.senlatestmovie.data.usecase.SaveAllMoviesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,18 +16,16 @@ import kotlinx.coroutines.withContext
 class MoviesViewModel(
     private val getAllMoviesUseCase: GetAllMoviesUseCase,
     private val deleteAllMoviesUseCase: DeleteAllMoviesUseCase,
-    private val saveAllMoviesUseCase: SaveAllMoviesUseCase
+    private val saveAllMoviesUseCase: SaveAllMoviesUseCase,
+    private val getRetrofitClientUseCase: GetRetrofitClientUseCase
 ) : ViewModel() {
-    private val retrofitServices: RetrofitServices = Common.retrofitService
     var moviesList = emptyList<MovieModel>()
 
 
     private suspend fun getExtendedMovieInfoList(movieId: Int) {
         val data =
-            retrofitServices.getExtendedMovieInfoList(
-                movieId = movieId,
-                apiKey = API_KEY,
-                language = LANGUAGE     //Locale.getDefault().language
+            getRetrofitClientUseCase.invoke().getExtendedMovieInfoList(
+                movieId = movieId
             )
         moviesList.forEach {
             if (it.id == data.body()?.id) {
@@ -46,10 +43,7 @@ class MoviesViewModel(
 
     suspend fun getMovieList(): List<MovieModel> {
         try {
-            val data = retrofitServices.getMovieList(
-                apiKey = API_KEY,
-                language = LANGUAGE         //Locale.getDefault().language
-            )
+            val data = getRetrofitClientUseCase.invoke().getMovieList()
             moviesList = data.body()?.results!!
             moviesList.forEach {
                 getExtendedMovieInfoList(it.id)
@@ -72,9 +66,7 @@ class MoviesViewModel(
     }
 
     companion object {
-        private const val LANGUAGE: String = "en"
         private const val DELIMETER: String = ", "
-        private const val API_KEY = "d557742cedd305383d77b2e73567b9b3"
         private const val MOVIE_BASE_URL = "https://themoviedb.org/movie/"
     }
 

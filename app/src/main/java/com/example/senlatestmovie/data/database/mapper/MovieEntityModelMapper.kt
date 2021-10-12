@@ -3,28 +3,42 @@ package com.example.senlatestmovie.data.database.mapper
 import com.example.senlatestmovie.api.models.popularMovie.MovieModel
 import com.example.senlatestmovie.data.database.entity.MovieEntity
 
-internal object MovieEntityModelMapper : IEntityModelMapper<MovieEntity, MovieModel> {
+internal object MovieEntityModelMapper : EntityModelMapper<MovieEntity, MovieModel> {
 
-    override fun toModel(t: MovieEntity): MovieModel = MovieModel(
-        adult = t.movie.adult,
-        backdrop_path = t.movie.backdrop_path,
-        id = t.movie.id,
-        original_language = t.movie.original_language,
-        original_title = t.movie.original_title,
-        overview = t.movie.overview,
-        popularity = t.movie.popularity,
-        poster_path = t.movie.poster_path,
-        release_date = t.movie.release_date,
-        title = t.movie.title,
-        video = t.movie.video,
-        vote_average = t.movie.vote_average,
-        vote_count = t.movie.vote_count,
-        country = t.movie.country,
-        link = t.movie.link,
+    override fun toModel(movieEntity: MovieEntity): MovieModel = MovieModel(
+        adult = movieEntity.adult,
+        backdrop_path = movieEntity.backdrop_path,
+        id = movieEntity.id,
+        original_language = movieEntity.original_language,
+        original_title = movieEntity.original_title,
+        overview = movieEntity.overview,
+        popularity = movieEntity.popularity,
+        poster_path = movieEntity.poster_path,
+        release_date = movieEntity.release_date,
+        title = movieEntity.title,
+        video = movieEntity.video,
+        vote_average = movieEntity.vote_average,
+        vote_count = movieEntity.vote_count,
+        country = movieEntity.country,
+        link = movieEntity.link,
     )
 
-    override fun toEntity(r: MovieModel): MovieEntity = MovieEntity(
-        movie = r
+    override fun toEntity(movieModel: MovieModel): MovieEntity = MovieEntity(
+        adult = movieModel.adult,
+        backdrop_path = movieModel.backdrop_path,
+        id = movieModel.id,
+        original_language = movieModel.original_language,
+        original_title = movieModel.original_title,
+        overview = movieModel.overview,
+        popularity = movieModel.popularity,
+        poster_path = movieModel.poster_path,
+        release_date = movieModel.release_date,
+        title = movieModel.title,
+        video = movieModel.video,
+        vote_average = movieModel.vote_average,
+        vote_count = movieModel.vote_count,
+        country = movieModel.country,
+        link = movieModel.link,
     )
 }
 

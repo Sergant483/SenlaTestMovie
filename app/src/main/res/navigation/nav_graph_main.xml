@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/extendedMovieInfo"
-        android:name="com.example.senlatestmovie.presentation.fragment.extendedMovieInfo.ExtendedMovieInfo"
+        android:name="com.example.senlatestmovie.presentation.fragment.extendedmovieinfo.ExtendedMovieInfo"
         android:label="extended_movie_info_fragment"
         tools:layout="@layout/extended_movie_info_fragment" />
 </navigation>

@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.senlatestmovie.R
 import com.example.senlatestmovie.databinding.MoviesFragmentBinding
+import com.example.senlatestmovie.presentation.fragment.extendedmovieinfo.ExtendedMovieInfo
 import com.example.senlatestmovie.presentation.fragment.movie.adapter.MoviesAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -72,9 +73,9 @@ class MoviesFragment : ScopeFragment() {
     private fun onItemClick(itemIndex: Int) {
         val id = viewModel.moviesList.get(itemIndex).id
         val bundle = Bundle()
-        bundle.putLong(
-            getString(R.string.bundle_movie_key),
-            id.toLong()
+        bundle.putInt(
+            ExtendedMovieInfo.BUNDLE_KEY,
+            id
         )
         findNavController().navigate(R.id.action_moviesFragment_to_extendedMovieInfo, bundle)
     }

@@ -10,14 +10,14 @@ interface MovieDao {
     @Query("SELECT * FROM MovieEntity")
     suspend fun getAll(): List<MovieEntity>
 
-    @Query("SELECT * FROM MovieEntity WHERE movieId = :id LIMIT 1")
-    suspend fun getMovieById(id:Long): MovieEntity
+    @Query("SELECT * FROM MovieEntity WHERE id = :id LIMIT 1")
+    suspend fun getMovieById(id:Int): MovieEntity
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdate(movieEntity: List<MovieEntity>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(movieEntity: List<MovieEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdate(movieEntity: MovieEntity)
+    @Update
+    suspend fun update(movieEntity: List<MovieEntity>)
 
     @Query("DELETE  FROM MovieEntity")
     suspend fun deleteAll()

@@ -47,7 +47,5 @@
                 tools:text="A bank teller called Guy realizes he is a background character in an open world video game called Free City that will soon go offline." />
 
         </LinearLayout>
-
     </com.google.android.material.card.MaterialCardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
