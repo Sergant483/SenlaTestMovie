@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.senlatestmovie.R
-import com.example.senlatestmovie.api.models.popularMovie.MovieModel
 import com.example.senlatestmovie.databinding.MoviesFragmentBinding
 import com.example.senlatestmovie.presentation.fragment.extendedmovieinfo.ExtendedMovieInfo
 import com.example.senlatestmovie.presentation.fragment.movie.adapter.MoviesAdapter
@@ -17,14 +16,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.lang.Exception
 
 class MoviesFragment : ScopeFragment() {
 
     private val viewModel: MoviesViewModel by viewModel()
     private var _binding: MoviesFragmentBinding? = null
     private val binding get() = _binding!!
-    var moviesList: List<MovieModel>? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,8 +44,12 @@ class MoviesFragment : ScopeFragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        viewModel.saveInstanceStateRecyclerView =
-            binding.moviesRecyclerView.layoutManager?.onSaveInstanceState()
+        try {
+            viewModel.saveInstanceStateRecyclerView =
+                binding.moviesRecyclerView.layoutManager?.onSaveInstanceState()
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
         super.onSaveInstanceState(outState)
     }
 
@@ -67,6 +69,7 @@ class MoviesFragment : ScopeFragment() {
 
     private fun initSwipeRefreshListener() {
         binding.swipeRefresh.setOnRefreshListener {
+            viewModel.saveInstanceStateRecyclerView = null
             lifecycleScope.launchWhenStarted {
                 viewModel.getMovieList()
                 binding.moviesRecyclerView.adapter =

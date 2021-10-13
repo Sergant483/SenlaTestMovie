@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.net.ConnectivityManager
 import android.os.Parcelable
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.senlatestmovie.api.models.popularMovie.MovieModel
@@ -21,7 +22,6 @@ class MoviesViewModel(
     private val _moviesList =  MutableLiveData<List<MovieModel>>()
     val moviesList = _moviesList
     var saveInstanceStateRecyclerView:Parcelable? = null
-    //var moviesList = emptyList<MovieModel>()
 
 
     private suspend fun getExtendedMovieInfoList(movieId: Int) {
@@ -57,8 +57,7 @@ class MoviesViewModel(
             }
 
         } catch (ex: Exception) {
-            //_moviesList.value = getAllMoviesUseCase.invoke()
-            ex.printStackTrace()
+            Log.e("ERROR", "NO internet connection -> $ex")
         }
 
     }

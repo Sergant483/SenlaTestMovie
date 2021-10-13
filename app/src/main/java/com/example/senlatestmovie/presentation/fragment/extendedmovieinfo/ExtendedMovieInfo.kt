@@ -7,19 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
-import com.example.senlatestmovie.api.models.popularMovie.MovieModel
 import com.example.senlatestmovie.databinding.ExtendedMovieInfoFragmentBinding
+import com.example.senlatestmovie.presentation.fragment.movie.ExtendedMovieContract
+import com.example.senlatestmovie.presentation.fragment.movie.ExtendedMoviePresenter
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.ScopeFragment
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ExtendedMovieInfo : ScopeFragment() {
+class ExtendedMovieInfo : ScopeFragment(), ExtendedMovieContract.View {
 
-    private val viewModel: ExtendedMovieInfoViewModel by viewModel()
+    //    private val viewModel: ExtendedMovieInfoViewModel by viewModel()
     private var _binding: ExtendedMovieInfoFragmentBinding? = null
     private val binding get() = _binding!!
-    private var movie: MovieModel? = null
+    private var bundle: Int? = null
+    private val presenter: ExtendedMoviePresenter by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,9 +33,14 @@ class ExtendedMovieInfo : ScopeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val bundle = arguments?.getInt(BUNDLE_KEY)
+        bundle = arguments?.getInt(BUNDLE_KEY)
+        presenter.attachView(view = this)
+        showUIData()
+    }
+
+    override fun showUIData() {
         lifecycleScope.launch {
-            movie = bundle?.let { viewModel.getMovieById(it) }
+            val movie = bundle?.let { presenter.downloadData(it) }
             Picasso.get().load(POSTER_BASE_URL + movie?.posterPath).into(binding.poster)
             binding.country.text = movie?.country
             binding.description.text = movie?.overview
@@ -45,11 +52,13 @@ class ExtendedMovieInfo : ScopeFragment() {
                 startActivity(browserIntent)
             }
         }
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        presenter.detachView()
     }
 
     companion object {

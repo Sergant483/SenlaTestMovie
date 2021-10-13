@@ -7,6 +7,7 @@ import com.example.senlatestmovie.data.datasource.MovieListDataSourceImpl
 import com.example.senlatestmovie.data.usecase.*
 import com.example.senlatestmovie.presentation.fragment.extendedmovieinfo.ExtendedMovieInfo
 import com.example.senlatestmovie.presentation.fragment.extendedmovieinfo.ExtendedMovieInfoViewModel
+import com.example.senlatestmovie.presentation.fragment.movie.ExtendedMoviePresenter
 import com.example.senlatestmovie.presentation.fragment.movie.MoviesFragment
 import com.example.senlatestmovie.presentation.fragment.movie.MoviesViewModel
 import org.koin.android.ext.koin.androidContext
@@ -20,7 +21,9 @@ private val fragmentModule: Module = module {
     }
     scope<ExtendedMovieInfo> {
         viewModel { ExtendedMovieInfoViewModel(get()) }
+        factory { ExtendedMoviePresenter()}
     }
+
 }
 
 private val dataModule: Module = module {
