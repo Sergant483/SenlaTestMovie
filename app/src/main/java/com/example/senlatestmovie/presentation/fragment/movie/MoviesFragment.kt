@@ -1,18 +1,22 @@
 package com.example.senlatestmovie.presentation.fragment.movie
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.senlatestmovie.R
 import com.example.senlatestmovie.databinding.MoviesFragmentBinding
 import com.example.senlatestmovie.presentation.fragment.extendedmovieinfo.ExtendedMovieInfo
 import com.example.senlatestmovie.presentation.fragment.movie.adapter.MoviesAdapter
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -23,6 +27,7 @@ class MoviesFragment : ScopeFragment() {
     private val viewModel: MoviesViewModel by viewModel()
     private var _binding: MoviesFragmentBinding? = null
     private val binding get() = _binding!!
+    private val adapter = MoviesAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,13 +39,24 @@ class MoviesFragment : ScopeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.moviesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val layoutManager = LinearLayoutManager(requireContext())
+        // layoutManager.findFirstVisibleItemPosition()
+        binding.moviesRecyclerView.layoutManager = layoutManager
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        binding.moviesRecyclerView.adapter = adapter
         lifecycleScope.launch {
-            initializeNetworkObserver()
-            initializeMovieListObserver()
-            viewModel.getMovieList()
+            viewModel.flow.collectLatest { pagingData ->
+                adapter.initialize(pagingData,::onItemClick)
+                adapter.submitData(pagingData)
+            }
         }
-        initSwipeRefreshListener()
+//        lifecycleScope.launch {
+//            initializeNetworkObserver()
+//            initializeMovieListObserver()
+//            viewModel.getMovieList()
+//        }
+//        initSwipeRefreshListener()
+//        layoutManager.findFirstVisibleItemPosition()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -72,8 +88,7 @@ class MoviesFragment : ScopeFragment() {
             viewModel.saveInstanceStateRecyclerView = null
             lifecycleScope.launchWhenStarted {
                 viewModel.getMovieList()
-                binding.moviesRecyclerView.adapter =
-                    viewModel.moviesList.value?.let { MoviesAdapter(it, ::onItemClick) }
+                binding.moviesRecyclerView.adapter = adapter
                 binding.swipeRefresh.isRefreshing = false
             }
         }
@@ -90,12 +105,12 @@ class MoviesFragment : ScopeFragment() {
         }
     }
 
-    private fun initializeMovieListObserver() {
-        viewModel.moviesList.observe(viewLifecycleOwner, { moviesList ->
-            binding.moviesRecyclerView.adapter =
-                MoviesAdapter(moviesList, ::onItemClick)
-            binding.moviesRecyclerView.layoutManager?.onRestoreInstanceState(viewModel.saveInstanceStateRecyclerView)
-        })
-    }
+//    private fun initializeMovieListObserver() {
+//        viewModel.moviesList.observe(viewLifecycleOwner, { moviesList ->
+//            adapter.initialize(moviesList, ::onItemClick)
+//            //binding.moviesRecyclerView.adapter = adapter
+//            //binding.moviesRecyclerView.layoutManager?.onRestoreInstanceState(viewModel.saveInstanceStateRecyclerView)
+//        })
+//    }
 
 }

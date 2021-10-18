@@ -1,15 +1,11 @@
 package com.example.senlatestmovie.presentation.fragment.extendedmovieinfo
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.example.senlatestmovie.databinding.ExtendedMovieInfoFragmentBinding
-import com.example.senlatestmovie.presentation.fragment.movie.ExtendedMovieContract
-import com.example.senlatestmovie.presentation.fragment.movie.ExtendedMoviePresenter
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -48,8 +44,7 @@ class ExtendedMovieInfo : ScopeFragment(), ExtendedMovieContract.View {
             binding.country.text = movie?.country
             binding.link.text = movie?.link
             binding.link.setOnClickListener {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(movie?.link))
-                startActivity(browserIntent)
+                movie?.link?.let { it1 -> presenter.openLink(requireContext(), it1) }
             }
         }
 

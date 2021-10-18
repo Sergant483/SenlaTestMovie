@@ -7,8 +7,13 @@ import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.example.senlatestmovie.api.models.popularMovie.MovieModel
 import com.example.senlatestmovie.data.usecase.*
+import com.example.senlatestmovie.presentation.fragment.movie.paging.MoviePagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -17,12 +22,15 @@ class MoviesViewModel(
     private val getAllMoviesUseCase: GetAllMoviesUseCase,
     private val deleteAllMoviesUseCase: DeleteAllMoviesUseCase,
     private val saveAllMoviesUseCase: SaveAllMoviesUseCase,
-    private val getRetrofitClientUseCase: GetRetrofitClientUseCase
+    private val getRetrofitClientUseCase: GetRetrofitClientUseCase,
+    private val getAllMoviesRetrofitUseCase: GetAllMoviesRetrofitUseCase
 ) : ViewModel() {
-    private val _moviesList =  MutableLiveData<List<MovieModel>>()
+    private val _moviesList = MutableLiveData<List<MovieModel>>()
     val moviesList = _moviesList
-    var saveInstanceStateRecyclerView:Parcelable? = null
-
+    var saveInstanceStateRecyclerView: Parcelable? = null
+    val flow = Pager(PagingConfig(pageSize = 1000)) {
+        MoviePagingSource(getAllMoviesRetrofitUseCase)
+    }.flow.cachedIn(viewModelScope)
 
     private suspend fun getExtendedMovieInfoList(movieId: Int) {
         val data =
@@ -46,7 +54,7 @@ class MoviesViewModel(
     suspend fun getMovieList() {
         try {
             _moviesList.value = getAllMoviesUseCase.invoke()
-            val data = getRetrofitClientUseCase.invoke().getMovieList()
+            val data = getRetrofitClientUseCase.invoke().getMovieList(1)
             _moviesList.value = data.body()?.results!!
             _moviesList.value?.forEach {
                 getExtendedMovieInfoList(it.id)
