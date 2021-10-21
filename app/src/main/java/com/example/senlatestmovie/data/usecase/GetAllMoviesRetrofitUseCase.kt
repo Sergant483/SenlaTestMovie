@@ -20,7 +20,7 @@ class GetAllMoviesRetrofitUseCase internal constructor(
                 getExtendedMovieInfoList(it.id)
             }
             withContext(Dispatchers.Default) {
-                deleteAllMoviesUseCase.invoke()
+                //deleteAllMoviesUseCase.invoke()
                 saveAllMoviesUseCase.invoke(moviesList)
             }
         } catch (ex: Exception) {

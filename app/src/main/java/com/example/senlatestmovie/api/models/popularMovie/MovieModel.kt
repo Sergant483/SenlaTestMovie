@@ -4,7 +4,7 @@ import androidx.room.Ignore
 import com.google.gson.annotations.SerializedName
 
 data class MovieModel(
-    var movieId:Long = 0L,
+    var movieId: Long = 0L,
     var adult: Boolean = false,
     @SerializedName("backdrop_path")
     var backdropPath: String = "",

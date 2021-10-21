@@ -1,5 +1,6 @@
 package com.example.senlatestmovie.data.datasource
 
+import androidx.paging.PagingSource
 import com.example.senlatestmovie.api.models.popularMovie.MovieModel
 import com.example.senlatestmovie.data.database.AppDataBase
 import com.example.senlatestmovie.data.database.entity.MovieEntity
@@ -12,6 +13,7 @@ internal interface MovieListDataSource {
     suspend fun insertAllMovies(movieList: List<MovieModel>)
     suspend fun deleteAll()
     suspend fun getMovieById(id: Int): MovieEntity
+    //fun getDodoModel(): PagingSource<Int, MovieEntity>
 }
 
 internal class MovieListDataSourceImpl(private val db: AppDataBase) : MovieListDataSource {
@@ -25,5 +27,9 @@ internal class MovieListDataSourceImpl(private val db: AppDataBase) : MovieListD
     }
 
     override suspend fun getMovieById(id: Int): MovieEntity = db.movieDao.getMovieById(id)
+
+//    override fun getDodoModel(): PagingSource<Int, MovieEntity> =
+//        db.movieDao.getAllDoggoModel()
+
 
 }

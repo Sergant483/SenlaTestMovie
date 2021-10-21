@@ -17,6 +17,7 @@ import com.example.senlatestmovie.presentation.fragment.extendedmovieinfo.Extend
 import com.example.senlatestmovie.presentation.fragment.movie.adapter.MoviesAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -42,11 +43,13 @@ class MoviesFragment : ScopeFragment() {
         val layoutManager = LinearLayoutManager(requireContext())
         // layoutManager.findFirstVisibleItemPosition()
         binding.moviesRecyclerView.layoutManager = layoutManager
-        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        adapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         binding.moviesRecyclerView.adapter = adapter
         lifecycleScope.launch {
-            viewModel.flow.collectLatest { pagingData ->
-                adapter.initialize(pagingData,::onItemClick)
+            viewModel.pager.collectLatest {
+                    pagingData ->
+                adapter.initialize(pagingData, ::onItemClick)
                 adapter.submitData(pagingData)
             }
         }
@@ -55,7 +58,7 @@ class MoviesFragment : ScopeFragment() {
 //            initializeMovieListObserver()
 //            viewModel.getMovieList()
 //        }
-//        initSwipeRefreshListener()
+        initSwipeRefreshListener()
 //        layoutManager.findFirstVisibleItemPosition()
     }
 
@@ -86,10 +89,14 @@ class MoviesFragment : ScopeFragment() {
     private fun initSwipeRefreshListener() {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.saveInstanceStateRecyclerView = null
-            lifecycleScope.launchWhenStarted {
-                viewModel.getMovieList()
-                binding.moviesRecyclerView.adapter = adapter
-                binding.swipeRefresh.isRefreshing = false
+            lifecycleScope.launch {
+                viewModel.pager.collectLatest {
+                        pagingData ->
+                    adapter.initialize(pagingData, ::onItemClick)
+                    binding.swipeRefresh.isRefreshing = false
+                    adapter.submitData(pagingData)
+                }
+
             }
         }
     }

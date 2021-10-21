@@ -49,6 +49,7 @@ class MoviesAdapter() :
         fun bind(movieItem: MovieModel) {
             Picasso.get().load(POSTER_BASE_URL + movieItem.posterPath).into(binding.posterImage)
             binding.description.text = movieItem.overview
+            binding.title.text = movieItem.title
             binding.movieCard.setOnClickListener {
                 onItemClickListener?.let { it1 ->
                     it1(

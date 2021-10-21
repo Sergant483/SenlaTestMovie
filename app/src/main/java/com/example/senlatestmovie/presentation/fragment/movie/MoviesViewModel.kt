@@ -2,19 +2,24 @@ package com.example.senlatestmovie.presentation.fragment.movie
 
 import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
+import android.graphics.Movie
 import android.net.ConnectivityManager
 import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
+import androidx.paging.*
 import com.example.senlatestmovie.api.models.popularMovie.MovieModel
+import com.example.senlatestmovie.data.database.AppDataBase
 import com.example.senlatestmovie.data.usecase.*
 import com.example.senlatestmovie.presentation.fragment.movie.paging.MoviePagingSource
+import com.example.senlatestmovie.presentation.fragment.movie.paging.MovieRemoteMediator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
@@ -23,14 +28,29 @@ class MoviesViewModel(
     private val deleteAllMoviesUseCase: DeleteAllMoviesUseCase,
     private val saveAllMoviesUseCase: SaveAllMoviesUseCase,
     private val getRetrofitClientUseCase: GetRetrofitClientUseCase,
-    private val getAllMoviesRetrofitUseCase: GetAllMoviesRetrofitUseCase
+    private val getAllMoviesRetrofitUseCase: GetAllMoviesRetrofitUseCase,
+    private val dataBase: AppDataBase
 ) : ViewModel() {
     private val _moviesList = MutableLiveData<List<MovieModel>>()
     val moviesList = _moviesList
     var saveInstanceStateRecyclerView: Parcelable? = null
-    val flow = Pager(PagingConfig(pageSize = 1000)) {
-        MoviePagingSource(getAllMoviesRetrofitUseCase)
-    }.flow.cachedIn(viewModelScope)
+//    val flow = Pager(PagingConfig(pageSize = 1000)) {
+//        MoviePagingSource(getAllMoviesRetrofitUseCase)
+//    }.flow.cachedIn(viewModelScope)
+
+    private val pagingSourceFactory = { dataBase.movieDao.getAllDoggoModel() }//MoviePagingSource(getAllMoviesRetrofitUseCase) }
+
+    @OptIn(ExperimentalPagingApi::class)
+    val pager = Pager(
+        config = PagingConfig(1000),
+        remoteMediator = MovieRemoteMediator(
+            dataBase,
+            getAllMoviesRetrofitUseCase,
+            saveAllMoviesUseCase
+        ),
+        pagingSourceFactory = pagingSourceFactory
+    ).flow.cachedIn(viewModelScope)
+
 
     private suspend fun getExtendedMovieInfoList(movieId: Int) {
         val data =
@@ -60,7 +80,7 @@ class MoviesViewModel(
                 getExtendedMovieInfoList(it.id)
             }
             withContext(Dispatchers.Default) {
-                deleteAllMoviesUseCase.invoke()
+                //deleteAllMoviesUseCase.invoke()
                 saveAllMoviesUseCase.invoke(_moviesList.value!!)
             }
 

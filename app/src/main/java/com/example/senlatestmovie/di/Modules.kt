@@ -17,7 +17,7 @@ import org.koin.dsl.module
 
 private val fragmentModule: Module = module {
     scope<MoviesFragment> {
-        viewModel { MoviesViewModel(get(), get(), get(), get(),get()) }
+        viewModel { MoviesViewModel(get(), get(), get(), get(),get(),get()) }
     }
     scope<ExtendedMovieInfo> {
         viewModel { ExtendedMovieInfoViewModel(get()) }
