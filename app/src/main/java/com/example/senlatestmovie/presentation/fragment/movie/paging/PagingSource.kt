@@ -1,10 +1,10 @@
 package com.example.senlatestmovie.presentation.fragment.movie.paging
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.senlatestmovie.api.models.popularMovie.MovieModel
+import com.example.senlatestmovie.data.database.entity.MovieModel
 import com.example.senlatestmovie.data.usecase.GetAllMoviesRetrofitUseCase
-import java.lang.Exception
 
 
 class MoviePagingSource(private val getAllMoviesRetrofitUseCase: GetAllMoviesRetrofitUseCase) :
@@ -14,6 +14,7 @@ class MoviePagingSource(private val getAllMoviesRetrofitUseCase: GetAllMoviesRet
         try {
             val nextPageNum = params.key ?: 1
             val response = getAllMoviesRetrofitUseCase.invoke(nextPageNum)
+            Log.e("GGG"," $nextPageNum $response ")
             return LoadResult.Page(data = response, prevKey = null, nextKey = nextPageNum + 1)
         } catch (ex: Exception) {
             return LoadResult.Error(ex)

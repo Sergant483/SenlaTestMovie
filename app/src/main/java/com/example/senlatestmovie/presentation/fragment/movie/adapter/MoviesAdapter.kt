@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.senlatestmovie.api.models.popularMovie.MovieModel
+import com.example.senlatestmovie.data.database.entity.MovieModel
 import com.example.senlatestmovie.databinding.MovieViewBinding
 import com.squareup.picasso.Picasso
 
@@ -37,11 +37,10 @@ class MoviesAdapter() :
     }
 
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) } // moviesItems[position])
+        getItem(position)?.let { holder.bind(it) }
     }
 
     //override fun getItemCount(): Int = moviesItems.
-
 
     inner class MoviesViewHolder(private val binding: MovieViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -60,9 +59,6 @@ class MoviesAdapter() :
         }
     }
 
-
-
-
     companion object {
         private const val POSTER_BASE_URL = "https://www.themoviedb.org/t/p/w220_and_h330_face/"
     }
@@ -71,9 +67,9 @@ class MoviesAdapter() :
 
 object MovieModelComparator:DiffUtil.ItemCallback<MovieModel>(){
     override fun areItemsTheSame(oldItem: MovieModel, newItem: MovieModel): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem == newItem
     }
     override fun areContentsTheSame(oldItem: MovieModel, newItem: MovieModel): Boolean {
-        return oldItem == newItem
+        return oldItem.posterPath == newItem.posterPath
     }
 }

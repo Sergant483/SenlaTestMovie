@@ -3,7 +3,7 @@ package com.example.senlatestmovie.presentation.fragment.extendedmovieinfo
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.example.senlatestmovie.api.models.popularMovie.MovieModel
+import com.example.senlatestmovie.data.database.entity.MovieModel
 import com.example.senlatestmovie.data.usecase.GetMovieByIdUseCase
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

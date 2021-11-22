@@ -5,8 +5,8 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.example.senlatestmovie.api.models.popularMovie.MovieModel
 import com.example.senlatestmovie.data.database.AppDataBase
+import com.example.senlatestmovie.data.database.entity.MovieModel
 import com.example.senlatestmovie.data.database.entity.RemoteKeys
 import com.example.senlatestmovie.data.usecase.GetAllMoviesRetrofitUseCase
 import com.example.senlatestmovie.data.usecase.SaveAllMoviesUseCase
@@ -64,7 +64,7 @@ class MovieRemoteMediator(
                 // clear all tables in the database
                 if (loadType == LoadType.REFRESH) {
                     dataBase.remoteKeysDao.clearRemoteKeys()
-                    dataBase.movieDao.deleteAll()
+                    //dataBase.movieDao.deleteAll()
                 }
                 val prevKey = if (page == 1) null else page - 1
                 val nextKey = if (endOfPaginationReached) null else page + 1

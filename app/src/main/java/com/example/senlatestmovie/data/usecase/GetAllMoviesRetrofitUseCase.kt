@@ -1,30 +1,29 @@
 package com.example.senlatestmovie.data.usecase
 
-import com.example.senlatestmovie.api.models.popularMovie.MovieModel
+import android.util.Log
+import com.example.senlatestmovie.data.database.entity.MovieModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GetAllMoviesRetrofitUseCase internal constructor(
-    private val getAllMoviesUseCase: GetAllMoviesUseCase,
-    private val deleteAllMoviesUseCase: DeleteAllMoviesUseCase,
-    private val saveAllMoviesUseCase: SaveAllMoviesUseCase,
     private val retrofitClientUseCase: GetRetrofitClientUseCase
 ) {
     private var moviesList = emptyList<MovieModel>()
 
-    suspend operator fun invoke(pageNum:Int): List<MovieModel> {
+    suspend operator fun invoke(pageNum: Int): List<MovieModel> {
         try {
             val data = retrofitClientUseCase.invoke().getMovieList(pageNum)
             moviesList = data.body()?.results!!
+            Log.e("GGG","${data.body()?.results!!} $pageNum")
             moviesList.forEach {
                 getExtendedMovieInfoList(it.id)
             }
             withContext(Dispatchers.Default) {
                 //deleteAllMoviesUseCase.invoke()
-                saveAllMoviesUseCase.invoke(moviesList)
+                //saveAllMoviesUseCase.invoke(moviesList)
             }
         } catch (ex: Exception) {
-            moviesList = getAllMoviesUseCase.invoke()
+            //moviesList = getAllMoviesUseCase.invoke()
             ex.printStackTrace()
         }
         return moviesList

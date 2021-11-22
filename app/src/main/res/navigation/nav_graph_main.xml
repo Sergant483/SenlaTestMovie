@@ -24,4 +24,9 @@
         android:name="com.example.senlatestmovie.presentation.fragment.extendedmovieinfo.ExtendedMovieInfo"
         android:label="extended_movie_info_fragment"
         tools:layout="@layout/extended_movie_info_fragment" />
+    <fragment
+        android:id="@+id/musicFragment"
+        android:name="com.example.senlatestmovie.presentation.fragment.music.MusicFragment"
+        android:label="music_fragment"
+        tools:layout="@layout/music_fragment" />
 </navigation>
