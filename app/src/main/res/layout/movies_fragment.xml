@@ -19,11 +19,6 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <pl.droidsonroids.gif.GifImageView
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:src="@drawable/wtf"
-        android:layout_gravity="center_vertical"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
